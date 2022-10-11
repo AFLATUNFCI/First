@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orderReqForAgamiAccsFCSubReport" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="583cd312-8a9a-43b1-b13e-d86c9a06a58d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="MASTER_ID" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_IS_CERTIFICATION_REQUIRED" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT OD.ID,OD.MASTER_ID,
+GET_DES_FOR_AGAMI_ACCS_LTD_O(OD.ID,OD.MASTER_ID,1) ITEM_DESC,
+OD.MSR_UNIT_ID,
+ACCS_PROD.GET_MSR_UNIT_SHORT_NAME(OD.MSR_UNIT_ID) MSR_UNIT,
+OD.SAMPLE_QTY,
+OD.ORDER_QTY,
+OM.EXCHANGE_RATE,
+OD.UNIT_PRICE,
+OD.UNIT_PRICE_DEKKO,
+OD.REMARKS,
+(ORDER_QTY*UNIT_PRICE) AMOUNT_DL,
+(ORDER_QTY*UNIT_PRICE)*NVL(OM.EXCHANGE_RATE,1)AMOUNT_TK,
+OM.MODE_OF_PAYMENT,
+OM.ORDER_DECREASE_AMOUNT_DL,
+(NVL((DECODE(OM.MODE_OF_PAYMENT,'Cash',1,OM.EXCHANGE_RATE)),1) * OM.ORDER_DECREASE_AMOUNT_DL) ORDER_DECREASE_AMOUNT_TK
+FROM ACCS_ORDER OM,ACCS_ORDER_DTL OD
+WHERE OD.MASTER_ID=$P{MASTER_ID}
+and OM.ID=OD.MASTER_ID
+ORDER BY OD.ID ASC]]>
+	</queryString>
+	<field name="ID" class="java.math.BigDecimal"/>
+	<field name="MASTER_ID" class="java.math.BigDecimal"/>
+	<field name="ITEM_DESC" class="java.lang.String"/>
+	<field name="MSR_UNIT_ID" class="java.math.BigDecimal"/>
+	<field name="MSR_UNIT" class="java.lang.String"/>
+	<field name="SAMPLE_QTY" class="java.math.BigDecimal"/>
+	<field name="ORDER_QTY" class="java.lang.Double"/>
+	<field name="EXCHANGE_RATE" class="java.math.BigDecimal"/>
+	<field name="UNIT_PRICE" class="java.math.BigDecimal"/>
+	<field name="UNIT_PRICE_DEKKO" class="java.math.BigDecimal"/>
+	<field name="REMARKS" class="java.lang.String"/>
+	<field name="AMOUNT_DL" class="java.math.BigDecimal"/>
+	<field name="AMOUNT_TK" class="java.math.BigDecimal"/>
+	<field name="MODE_OF_PAYMENT" class="java.lang.String"/>
+	<field name="ORDER_DECREASE_AMOUNT_DL" class="java.math.BigDecimal"/>
+	<field name="ORDER_DECREASE_AMOUNT_TK" class="java.math.BigDecimal"/>
+	<variable name="V_SAMPLE_QTY_TTL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SAMPLE_QTY}]]></variableExpression>
+	</variable>
+	<variable name="V_ORDER_QTY_TTL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ORDER_QTY}]]></variableExpression>
+	</variable>
+	<variable name="V_UNIT_PRICE_TTL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{UNIT_PRICE_DEKKO}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_DL" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[($F{ORDER_QTY} !=null? $F{ORDER_QTY}: 0)
+*
+($F{UNIT_PRICE_DEKKO} !=null? $F{UNIT_PRICE_DEKKO}:0)]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_TK" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[((
+($F{ORDER_QTY} !=null? $F{ORDER_QTY}: 0)
+*
+($F{UNIT_PRICE_DEKKO} !=null? $F{UNIT_PRICE_DEKKO}:0))
+*
+($F{MODE_OF_PAYMENT} != "Cash" ? ($F{EXCHANGE_RATE}!=null?$F{EXCHANGE_RATE}:0) : 1)
+)]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="23" y="0" width="235" height="30" uuid="52382158-b24d-4db1-84f6-3123cffc6896"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="23" height="30" uuid="2876eaa1-6145-4f82-8f98-8cd57f97c713"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="258" y="0" width="61" height="30" uuid="887446f6-4d71-4134-8a2e-cae2f2b24978"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quantity"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="319" y="0" width="83" height="30" uuid="6cf5630e-2b0d-4283-8000-589c5e4cba99"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Unit Price "+($F{MODE_OF_PAYMENT}=="Cash"? "(TK)":"(\$)")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="402" y="0" width="72" height="30" uuid="9598907a-3384-4b05-9405-a6dc5f138f51"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Amount (\$)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="474" y="0" width="82" height="30" uuid="e47f2704-e832-42bc-a998-94aeb3d9bc56"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Amount (TK)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Prevent">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="23" y="0" width="235" height="20" isPrintWhenDetailOverflows="true" uuid="845dcceb-f19d-45a2-8738-9c2f4c2ba14c"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement markup="html">
+					<font fontName="Segoe UI" size="8" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ITEM_DESC}!=null?$F{ITEM_DESC}:"")+
+
+($F{REMARKS}!=null?"<br><b>Notes # </b><br>":"")+
+($F{REMARKS}!=null?$F{REMARKS}:"")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="23" height="20" isPrintWhenDetailOverflows="true" uuid="93dbc7c8-4119-40e1-9c1d-cd7ca30a70b8"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="258" y="0" width="61" height="20" isPrintWhenDetailOverflows="true" uuid="029683a2-1d77-4e74-a1ee-650ac41ef2c6"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ORDER_QTY} !=null? $F{ORDER_QTY} + " " + $F{MSR_UNIT} : " "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="319" y="0" width="83" height="20" isPrintWhenDetailOverflows="true" uuid="65eabde1-1a14-4593-8119-25ba5d160d81"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{UNIT_PRICE_DEKKO} !=null?
+((($F{UNIT_PRICE_DEKKO}))+" /"+$F{MSR_UNIT})
+: " ")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="402" y="0" width="72" height="20" uuid="8780ff5f-37cf-4b70-ac5d-fc4ed82c6ea7"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["\$ "+($F{MODE_OF_PAYMENT} == "Cash" ? 0.00 : (
+(new DecimalFormat("#,##0.00").format((($F{ORDER_QTY} !=null? $F{ORDER_QTY}: 0)
+*
+($F{UNIT_PRICE_DEKKO} !=null? $F{UNIT_PRICE_DEKKO}:0))))))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="474" y="0" width="82" height="20" uuid="bcd68147-d749-48bf-a886-d26a6d2713ee"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TK "+(new DecimalFormat("#,##0.00").format(((($F{ORDER_QTY} !=null? $F{ORDER_QTY}: 0)
+*
+($F{UNIT_PRICE_DEKKO} !=null? $F{UNIT_PRICE_DEKKO}:0))
+*
+($F{MODE_OF_PAYMENT} != "Cash" ? ($F{EXCHANGE_RATE}!=null?$F{EXCHANGE_RATE}:0) : 1)
+)))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="80">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="402" y="0" width="72" height="30" isPrintWhenDetailOverflows="true" uuid="9b356492-1f5e-4ef0-9d92-45cba8511a3a"/>
+				<box bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["\$ "+($F{MODE_OF_PAYMENT} == "Cash" ? 0.00 : (($V{AMOUNT_DL}!= null ? new DecimalFormat("#,##0.00").format($V{AMOUNT_DL}) : "")
++
+($F{ORDER_DECREASE_AMOUNT_DL}!= null ? "\n"+"\$ "+new DecimalFormat("#,##0.00").format($F{ORDER_DECREASE_AMOUNT_DL}) : "")
++
+($F{ORDER_DECREASE_AMOUNT_DL}!= null ? "\n"+"\$ "+ new DecimalFormat("#,##0.00").format((( $V{AMOUNT_DL}!= null ? $V{AMOUNT_DL} : 0.0)
+-
+($F{ORDER_DECREASE_AMOUNT_DL}!= null ? $F{ORDER_DECREASE_AMOUNT_DL} : 0.0))):"")))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="474" y="0" width="82" height="30" isPrintWhenDetailOverflows="true" uuid="1058a00e-2e24-4c07-889f-16f8c1fc0849"/>
+				<box bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TK "+ ($V{AMOUNT_TK}!= null ? new DecimalFormat("#,##0.00").format($V{AMOUNT_TK}) : 0.00)
++
+($F{ORDER_DECREASE_AMOUNT_TK}!= null ? "\n"+"TK "+new DecimalFormat("#,##0.00").format($F{ORDER_DECREASE_AMOUNT_TK}) : "")
++
+($F{ORDER_DECREASE_AMOUNT_TK}!= null ? "\n"+"TK "+new DecimalFormat("#,##0.00").format((($V{AMOUNT_TK} != null ? $V{AMOUNT_TK} : 0.0)
+-
+($F{ORDER_DECREASE_AMOUNT_TK}!= null ? $F{ORDER_DECREASE_AMOUNT_TK} : 0.0))):"")]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="30" width="555" height="50" isPrintWhenDetailOverflows="true" uuid="3f74e925-a4af-4f97-ab2a-23baa06089ad"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="P_IS_CERTIFICATION_REQUIRED">
+					<subreportParameterExpression><![CDATA[$P{P_IS_CERTIFICATION_REQUIRED}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="MASTER_ID">
+					<subreportParameterExpression><![CDATA[$P{MASTER_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} +File.separator+ "orderReq3rdPartyTestReqReport.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="402" height="30" isPrintWhenDetailOverflows="true" uuid="07aae2fa-ea7c-4307-a631-c583eaaa173a"/>
+				<box bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total"
++
+($F{ORDER_DECREASE_AMOUNT_DL}!= null ? "\n"+"Decrease Amount:" : "")
++
+($F{ORDER_DECREASE_AMOUNT_DL}!= null ? "\n"+"Grand Total:" : "")]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
